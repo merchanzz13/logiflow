@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LogiFlow</title></head>
+<body style="font:14px system-ui;padding:24px;color:#29332b;background:#f7f5ed">
+<p>Loading LogiFlow…</p>
+<script>
+(async()=>{
+ try{
+  const r=await fetch('./site.gz.b64');
+  if(!r.ok) throw new Error('Could not load the site bundle ('+r.status+').');
+  const b=atob((await r.text()).trim());
+  const bytes=Uint8Array.from(b,c=>c.charCodeAt(0));
+  const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+  const html=await new Response(stream).text();
+  document.open();document.write(html);document.close();
+ }catch(e){document.body.innerHTML='<h2>LogiFlow could not load</h2><p>'+e.message+'</p><p>Try a modern browser and refresh.</p>'}
+})();
+</script></body></html>
